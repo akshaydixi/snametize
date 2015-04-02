@@ -5,6 +5,10 @@ LICENSE : MIT License
 */
 
 #include "snametize.hpp"
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
 
 void writeMetisLine(std::ofstream& outputfile, std::vector<uint64_t>& neighbors) {
 	std::stringstream node_list_stream;
@@ -22,16 +26,57 @@ void writeSnapLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors,
 
 
 int main(int argc, char** argv) {
-	if (argc < 3) {
-		printf("Usage: ./snametize <raw_webgraph_file> <new_metis_or_snap_file(> [--snap] \nUnless you specify the option '--snap', we convert to the metis format by default\n");
-		return 1;
-	}
+	
+	std::string input_file_path, output_file_path, output_format, error_message = "Error\n";
+	OutputFormat currentOutputFormat = METIS;
+	try {
+		po::options_description desc("Allowed options");
+		desc.add_options()
+			("help", "produce help message")
+			("input", po::value<std::string>(), "Path to the input webgraph file")
+			("output", po::value<std::string>(), "Path to which output file should be written")
+			("format", po::value<std::string>(), "Which format should the output file be written as. Currently we support SNAP and METIS")
+		;
 
-	printf("Snametize v1.0\nInput File : %s\nOutput File : %s\n", argv[1], argv[2]);
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+		po::notify(vm);
+
+		if (vm.count("help")) {
+			std::cout << desc << std::endl;
+			return 0;
+		}
+
+		if (vm.count("input")) input_file_path = vm["input"].as<std::string>();
+		else error_message += "Please enter the path of the webgraph you want to convert\n";
+
+		if (vm.count("output")) output_file_path = vm["output"].as<std::string>();
+		else error_message += "Please enter the output path to store the converted graph\n";
+
+		if (vm.count("format")) {
+			std::string format = vm["format"].as<std::string>();
+			if (format == "METIS") currentOutputFormat = METIS;
+			else if (format == "SNAP") currentOutputFormat = SNAP;
+			else error_message+= "Please enter a valid output format: METIS or SNAP\n";
+		}
+
+		if (error_message.compare("Error\n") != 0) {
+			std::cerr << error_message;
+			return 1;
+		} 
+		
+	} catch (std::exception& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		return 1;
+	} catch(...) {
+		std::cerr << "Exception of unknown type!!" << std::endl;
+	}
+	
+	printf("Snametize v1.0\nInput File : %s\nOutput File : %s\n", input_file_path.c_str(), output_file_path.c_str());
 	std::clock_t begin = std::clock();
 	auto t_start = std::chrono::high_resolution_clock::now();
 
-	std::ifstream webgraph(argv[1]);
+	std::ifstream webgraph(input_file_path);
 
 	uint64_t vertices,edges = 0;
 	std::vector< std::vector<uint64_t> > adjacency_list;
@@ -67,11 +112,7 @@ int main(int argc, char** argv) {
 			  << "Wall clock time passed : " << std::chrono::duration<double, std::milli>(t_mid - t_start).count()
 			  << "ms" << std::endl;
 
-	std::ofstream outputfile(argv[2]);
-	OutputFormat currentOutputFormat = METIS;
-	if (argc == 4 && SNAP_OPTION.compare(argv[3]) == 0) {
-		currentOutputFormat = SNAP;
-	}
+	std::ofstream outputfile(output_file_path);
 	 
 	if (currentOutputFormat == METIS) {
 		std::stringstream ss;

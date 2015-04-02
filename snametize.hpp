@@ -15,7 +15,6 @@
 #include <sstream>
 #include <vector>
 
-
 /* OutputFormats supported by Snametize. Currently, we support 
 
 	1. Metis format : The first line will contain the number of vertices(N) and number of edges in the graph. 
@@ -24,10 +23,10 @@
 
 	2. SNAP format :  All the edges are placed line by line such that each edge is represented by
 					   <vertex_id_in> <vertex_id_out>
-*/
+	*/
 enum OutputFormat {
 	METIS = 1,
-	SNAP = 2
+	SNAP = 2,
 };
 
 // The Comparator class used to filter out edges from the graph the are self-loops
@@ -81,11 +80,5 @@ uint64_t stringToMetisInteger(const std::string& s) {
 
 void writeMetisLine(std::ofstream& outputfile, std::vector<uint64_t>& neighbors);
 void writeSnapLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors, uint64_t& currentVertex);
-
-
-
-
-
-
 
 #endif // SNAMETIZE_HPP
