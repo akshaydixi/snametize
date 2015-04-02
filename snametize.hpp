@@ -17,16 +17,20 @@
 
 /* OutputFormats supported by Snametize. Currently, we support 
 
-	1. Metis format : The first line will contain the number of vertices(N) and number of edges in the graph. 
+	1. METIS format : The first line will contain the number of vertices(N) and number of edges in the graph. 
 					  N lines follow where each line i(1 <= i <= N) is a list of space separated vertices that
 					  are connected to i
 
 	2. SNAP format :  All the edges are placed line by line such that each edge is represented by
 					   <vertex_id_in> <vertex_id_out>
-	*/
+	
+	3. GML format :  Please refer to https://www.uni-passau.de/fileadmin/files/lehrstuhl/brandenburg/projekte/gml/gml-technical-report.pdf
+					 for the Graph Modelling Language. We currently support only a ver basic GML format with no property support as of yet.
+*/
 enum OutputFormat {
 	METIS = 1,
 	SNAP = 2,
+	GML = 3
 };
 
 // The Comparator class used to filter out edges from the graph the are self-loops
@@ -80,5 +84,5 @@ uint64_t stringToMetisInteger(const std::string& s) {
 
 void writeMetisLine(std::ofstream& outputfile, std::vector<uint64_t>& neighbors);
 void writeSnapLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors, uint64_t& currentVertex);
-
+void writeGmlLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors, uint64_t& currentVertex);
 #endif // SNAMETIZE_HPP

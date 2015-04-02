@@ -9,7 +9,6 @@ LICENSE : MIT License
 
 namespace po = boost::program_options;
 
-
 void writeMetisLine(std::ofstream& outputfile, std::vector<uint64_t>& neighbors) {
 	std::stringstream node_list_stream;
 	std::copy(neighbors.begin(), neighbors.end(), std::ostream_iterator<uint64_t>(node_list_stream, " "));
@@ -24,6 +23,18 @@ void writeSnapLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors,
 	outputfile << edge_list_string;
 }
 
+void writeGmlLines(std::ofstream& outputfile, std::vector<uint64_t>& neighbors, uint64_t& currentVertex) {
+	std::stringstream gml_stream;
+	static uint64_t edge_counter = 1;
+	gml_stream << "node [" << std::endl << "id " << currentVertex << std::endl << "]" << std::endl;
+	for (auto neighbor : neighbors) gml_stream <<  "edge [" << std::endl
+		<< "id " << edge_counter++ << std::endl 
+		<< "source " << currentVertex << std::endl 
+		<< "target" << neighbor << std::endl
+		<< "]" << std::endl;
+	std::string gml_stream_string = gml_stream.str().c_str();
+	outputfile << gml_stream_string;
+}
 
 int main(int argc, char** argv) {
 	
@@ -35,7 +46,7 @@ int main(int argc, char** argv) {
 			("help", "produce help message")
 			("input", po::value<std::string>(), "Path to the input webgraph file")
 			("output", po::value<std::string>(), "Path to which output file should be written")
-			("format", po::value<std::string>(), "Which format should the output file be written as. Currently we support SNAP and METIS")
+			("format", po::value<std::string>(), "Which format should the output file be written as. Currently we support SNAP, METIS and GML")
 		;
 
 		po::variables_map vm;
@@ -57,7 +68,8 @@ int main(int argc, char** argv) {
 			std::string format = vm["format"].as<std::string>();
 			if (format == "METIS") currentOutputFormat = METIS;
 			else if (format == "SNAP") currentOutputFormat = SNAP;
-			else error_message+= "Please enter a valid output format: METIS or SNAP\n";
+			else if (format == "GML") currentOutputFormat = GML;
+			else error_message+= "Please enter a valid output format: METIS, SNAP or GML\n";
 		}
 
 		if (error_message.compare("Error\n") != 0) {
@@ -118,6 +130,15 @@ int main(int argc, char** argv) {
 		std::stringstream ss;
 		ss << vertices << " " << edges;
 		outputfile << ss.str().c_str() << std::endl;
+	} else if (currentOutputFormat == GML) {
+		std::stringstream ss;
+		ss << "graph [" << std::endl
+		   << "directed 0" << std::endl
+		   << "vertex_properties [" << std::endl
+		   << "]" << std::endl
+		   << "edge_properties [" << std::endl
+		   << "]" << std::endl;
+		outputfile << ss.str().c_str();
 	}
 	
 	uint64_t currentVertex = 1;
@@ -127,6 +148,8 @@ int main(int argc, char** argv) {
 		} else if (currentOutputFormat == SNAP) {
 			writeSnapLines(outputfile, neighbors, currentVertex);
 			currentVertex++;
+		} else if (currentOutputFormat == GML) {
+			writeGmlLines(outputfile, neighbors, currentVertex);
 		}
 	}
 
