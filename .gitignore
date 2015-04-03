@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+# Linting
+CPPLINT.cfg
+cpplint*
+
+#Eclipse files
+.cproject
+.project

@@ -1,9 +1,10 @@
-snametize: snametize.o
-	g++ -std=c++11 -o snametize snametize.o -lboost_program_options
+all : snametize.o
+	g++ -std=c++11 -o bin/snametize snametize.o -lboost_program_options
+	rm -f snametize.o
 
-snametize.o : snametize.cpp
-	g++ -std=c++11 -c snametize.cpp -lboost_program_options
+snametize.o : src/snametize.cc
+	g++ -std=c++11 -c src/snametize.cc -lboost_program_options
 
 .PHONY : clean
 clean :
-	rm -f snametize.o snametize
+	rm -f snametize.o bin/snametize
