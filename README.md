@@ -12,10 +12,6 @@ Convert a graph from an ASCIIGraph format to SNAP, GML and METIS formats
 ```bash
  ./snametize --input /path/to/mygraphfile --output /path/to/outputfile --format <SNAP|GML|METIS>
 ```
-
-###TODOs
-
-- [ ] Write simple tests
-- [ ] Add more graph formats
-- [ ] Currently, it runs only using a single core. Look into improving performance by utilizing more cores(maybe during the writing phase)
-- [ ] Add property support for GML graphs
+## Future
+I'm planning to refactor this into a full fledged library to convert graphs from one format to another blazingly fast.
+Refer to the [wiki](https://github.com/akshaydixi/snametize/wiki) for more details.
