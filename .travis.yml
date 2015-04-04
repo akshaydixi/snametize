@@ -1,0 +1,14 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+
+cache: apt
+
+before_script:
+  - sh build/installCXXDependencies.sh
+  - cd build
+  - cmake -Dtest=ON ..
+
+script:
+  - ctest --output-on-failure
