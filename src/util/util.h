@@ -1,14 +1,15 @@
 // Copyright 2015 Akshay Dixit
 
-#ifndef UTIL_H_
-#define UTIL_H_
+#ifndef UTIL_UTIL_H_
+#define UTIL_UTIL_H_
 
 #include <algorithm>
+#include <functional>
 #include <string>
 #include <sstream>
 #include <vector>
 
-// trim spaces from the end of a string
+// Trim spaces from the end of a string
 static inline std::string &rtrim(std::string* s) {
         s->erase(std::find_if(s->rbegin(),
                     s->rend(),
@@ -24,4 +25,4 @@ std::vector<std::string>& split(const std::string& s,
 
 std::vector<std::string> split(const std::string& s, const char& delim);
 
-#endif /* UTIL_H_ */
+#endif  // UTIL_UTIL_H_

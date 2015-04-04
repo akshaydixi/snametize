@@ -1,11 +1,13 @@
 // Copyright 2015 Akshay Dixit
 
-#ifndef METISWRITER_H_
-#define METISWRITER_H_
+#ifndef WRITER_METISWRITER_H_
+#define WRITER_METISWRITER_H_
 
 #include "../util/util.h"
 #include <iterator>
 #include <sstream>
+#include <string>
+#include <vector>
 #include "writer.h"
 
 void writeMetisLine(std::ofstream* outputfile,
@@ -19,4 +21,4 @@ class MetisWriter : public Writer {
             uint64_t edges);
 };
 
-#endif /* METISWRITER_H_ */
+#endif  // WRITER_METISWRITER_H_

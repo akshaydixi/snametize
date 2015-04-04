@@ -1,6 +1,6 @@
 // Copyright 2015 Akshay Dixit
-#ifndef WRITER_H_
-#define WRITER_H_
+#ifndef WRITER_WRITER_H_
+#define WRITER_WRITER_H_
 
 #include <fstream>
 #include <string>
@@ -9,7 +9,7 @@
 
 class Writer {
  public:
-    Writer(const std::string& outputFileName);
+    explicit Writer(const std::string& outputFileName);
     virtual inline ~Writer() = 0;
 
     virtual void write(std::vector< std::vector<uint64_t> >,
@@ -23,4 +23,4 @@ Writer::~Writer() {
     outputFileBuffer.close();
 }
 
-#endif /* WRITER_H_ */
+#endif  // WRITER_WRITER_H_

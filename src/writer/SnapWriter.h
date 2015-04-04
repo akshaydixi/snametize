@@ -1,9 +1,11 @@
 // Copyright 2015 Akshay Dixit
 
-#ifndef SNAPWRITER_H_
-#define SNAPWRITER_H_
+#ifndef WRITER_SNAPWRITER_H_
+#define WRITER_SNAPWRITER_H_
 
 #include <sstream>
+#include <string>
+#include <vector>
 #include "writer.h"
 
 void writeSnapLines(std::ofstream* outputfile,
@@ -17,4 +19,4 @@ class SnapWriter : public Writer {
             uint64_t edges);
 };
 
-#endif /* SNAPWRITER_H_ */
+#endif  // WRITER_SNAPWRITER_H_

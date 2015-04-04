@@ -27,7 +27,7 @@
 					   <vertex_id_in> <vertex_id_out>
 	
 	3. GML format :  Please refer to https://www.uni-passau.de/fileadmin/files/lehrstuhl/brandenburg/projekte/gml/gml-technical-report.pdf
-					 for the Graph Modelling Language. We currently support only a ver basic GML format with no property support as of yet.
+					 for the Graph Modelling Language. We currently support only a very basic GML format with no property support as of yet.
 */
 enum OutputFormat {
     METIS = 1,
