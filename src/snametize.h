@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <ctime>
@@ -67,25 +66,14 @@ static inline std::string &rtrim(std::string* s) {
 // Split a string into a vector according to a delimiter
 std::vector<std::string>& split(const std::string& s,
         const char& delim,
-        std::vector<std::string>* elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-         elems->push_back(item);
-    }
-    return *elems;
-}
+        std::vector<std::string>* elems);
 
-std::vector<std::string> split(const std::string& s, const char& delim) {
-    std::vector<std::string> elems;
-    split(s, delim, &elems);
-    return elems;
-}
+std::vector<std::string> split(const std::string& s, const char& delim);
 
 // Metis and Snap accepts vertex numbers from 1
 // Webgraph stores vertices starting from 0
 // Thus we increment all read numbers by 1
-uint64_t stringToMetisInteger(const std::string& s) {
+uint64_t inline stringToMetisInteger(const std::string& s) {
     return boost::lexical_cast<uint64_t>(s) + 1;
 }
 
