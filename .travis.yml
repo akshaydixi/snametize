@@ -17,7 +17,7 @@ before_install:
   - g++ --version
 
 before_script:
-  - cd build
+  - mkdir -p build && cd build
   - cmake -Dtest=ON ..
 
 script:

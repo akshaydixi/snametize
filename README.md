@@ -1,5 +1,7 @@
 # snametize 
 [![Build Status](https://travis-ci.org/akshaydixi/snametize.svg?branch=master)](https://travis-ci.org/akshaydixi/snametize)
+
+
 Convert a graph from an ASCIIGraph format to SNAP, GML and METIS formats 
 
 ## Dependencies
