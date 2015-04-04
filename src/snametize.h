@@ -54,21 +54,6 @@ class NeighborFilterComparator {
         }
 };
 
-// trim spaces from the end of a string
-static inline std::string &rtrim(std::string* s) {
-        s->erase(std::find_if(s->rbegin(),
-                    s->rend(),
-                    std::not1(std::ptr_fun<int, int>(std::isspace))).base(),
-                s->end());
-        return *s;
-}
-
-// Split a string into a vector according to a delimiter
-std::vector<std::string>& split(const std::string& s,
-        const char& delim,
-        std::vector<std::string>* elems);
-
-std::vector<std::string> split(const std::string& s, const char& delim);
 
 // Metis and Snap accepts vertex numbers from 1
 // Webgraph stores vertices starting from 0
@@ -77,15 +62,6 @@ uint64_t inline stringToMetisInteger(const std::string& s) {
     return boost::lexical_cast<uint64_t>(s) + 1;
 }
 
-void writeMetisLine(std::ofstream* outputfile,
-        const std::vector<uint64_t>& neighbors);
 
-void writeSnapLines(std::ofstream* outputfile,
-        const std::vector<uint64_t>& neighbors,
-        const uint64_t& currentVertex);
-
-void writeGmlLines(std::ofstream* outputfile,
-        const std::vector<uint64_t>& neighbors,
-        const uint64_t& currentVertex);
 
 #endif  // SNAMETIZE_H_

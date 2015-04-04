@@ -1,7 +1,12 @@
 // Copyright 2015 Akshay Dixit
-#include "snametize.h"
+
 #include <boost/program_options.hpp>
 #include <chrono>
+#include "snametize.h"
+#include "writer/writer.h"
+#include "writer/MetisWriter.h"
+#include "writer/SnapWriter.h"
+#include "writer/GmlWriter.h"
 
 namespace po = boost::program_options;
 
@@ -107,7 +112,7 @@ int main(int argc, char** argv) {
     std::clock_t mid = std::clock();
     auto t_mid = std::chrono::high_resolution_clock::now();
     std::cout << std::fixed << std::setprecision(3)
-            << "\n\n\nReading finished" << std::endl
+            << "\n\nReading finished" << std::endl
             << "CPU Time used : "
             << 1000.0 * (mid - begin) / CLOCKS_PER_SEC
             << "ms" << std::endl
@@ -115,45 +120,25 @@ int main(int argc, char** argv) {
             << std::chrono::duration<double, std::milli>(t_mid-t_start).count()
             << "ms" << std::endl;
 
-    std::ofstream outputfile(output_file_path);
-
+    Writer* writer;
     if (currentOutputFormat == METIS) {
-        std::stringstream ss;
-        ss << vertices << " " << edges;
-        outputfile << ss.str().c_str() << std::endl;
+        writer = new MetisWriter(output_file_path);
     } else if (currentOutputFormat == GML) {
-        std::stringstream ss;
-        ss << "graph [" << std::endl
-                << "directed 0" << std::endl
-                << "vertex_properties [" << std::endl
-                << "]" << std::endl
-                << "edge_properties [" << std::endl
-                << "]" << std::endl;
-        outputfile << ss.str().c_str();
+        writer = new GmlWriter(output_file_path);
+    } else if (currentOutputFormat == SNAP) {
+        writer = new SnapWriter(output_file_path);
     }
 
-    uint64_t currentVertex = 1;
-    for (std::vector<uint64_t> neighbors : adjacency_list) {
-        if (currentOutputFormat == METIS) {
-            writeMetisLine(&outputfile, neighbors);
-        } else if (currentOutputFormat == SNAP) {
-            writeSnapLines(&outputfile, neighbors, currentVertex);
-            currentVertex++;
-        } else if (currentOutputFormat == GML) {
-            writeGmlLines(&outputfile, neighbors, currentVertex);
-        }
-    }
-
-    outputfile.close();
+    writer->write(adjacency_list, vertices, edges);
     std::clock_t end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
     std::cout << std::fixed << std::setprecision(3)
-            << "\n\n\nWriting finished" << std::endl
+            << "\n\nWriting finished successfully" << std::endl
             << "CPU Time used : "
             << 1000.0 * (end - mid) / CLOCKS_PER_SEC
             << "ms" << std::endl
             << "Wall clock time passed : "
             << std::chrono::duration<double, std::milli>(t_end-t_mid).count()
             << "ms" << std::endl;
-    printf("\nProcessing done\n");
+    std::cout << "Processing done" << std::endl;
 }

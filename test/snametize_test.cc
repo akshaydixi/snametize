@@ -2,6 +2,7 @@
 #include <iostream>
 #include "gtest/gtest.h"
 #include "../src/snametize.h"
+#include "../src/writer/MetisWriter.h"
 
 const std::string SMALL_WEBGRAPH("./small_webgraph.txt");
 const std::string SMALLWEB_GRAPH_METIS("./small_webgraph.metis");
