@@ -11,4 +11,5 @@ before_script:
   - cmake -Dtest=ON ..
 
 script:
+  - make
   - ctest --output-on-failure
