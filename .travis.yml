@@ -8,6 +8,9 @@ compiler:
 
 cache: apt
 
+before_install:
+  - sudo apt-get update -qq
+
 before_script:
   - sh build/installCXXDependencies.sh
   - cd build
