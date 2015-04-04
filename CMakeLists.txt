@@ -6,7 +6,7 @@ project (snametize CXX)
 
 set (snametize_VERSION_MAJOR 0)
 set (snametize VERSION_MINOR 1)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -g -Wall")
 
 find_package( Boost REQUIRED COMPONENTS program_options)
 include_directories( ${Boost_INCLUDE_DIRS} )
