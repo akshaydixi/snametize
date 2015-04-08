@@ -2,6 +2,6 @@
 
 #include "graph.h"
 
-Graph::Graph(bool directedness = False) {
+Graph::Graph(bool directedness = false) {
     _directedness = directedness;
 }

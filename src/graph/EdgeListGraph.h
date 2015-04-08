@@ -5,6 +5,7 @@
 
 #include "graph.h"
 #include <unordered_set>
+#include <unordered_map>
 
 class EdgeListGraph : public Graph {
  private:
