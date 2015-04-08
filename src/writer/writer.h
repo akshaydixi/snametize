@@ -1,4 +1,5 @@
 // Copyright 2015 Akshay Dixit
+
 #ifndef WRITER_WRITER_H_
 #define WRITER_WRITER_H_
 

@@ -130,6 +130,7 @@ int main(int argc, char** argv) {
     }
 
     writer->write(adjacency_list, vertices, edges);
+    delete writer;
     std::clock_t end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
     std::cout << std::fixed << std::setprecision(3)
