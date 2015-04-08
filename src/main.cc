@@ -120,16 +120,20 @@ int main(int argc, char** argv) {
             << std::chrono::duration<double, std::milli>(t_mid-t_start).count()
             << "ms" << std::endl;
 
-    Writer* writer;
+    Writer* writer = nullptr;
     if (currentOutputFormat == METIS) {
         writer = new MetisWriter(output_file_path);
     } else if (currentOutputFormat == GML) {
         writer = new GmlWriter(output_file_path);
-    } else if (currentOutputFormat == SNAP) {
+    } else {
+
+        // We know it will be definitely SNAP because we have already
+        // eliminated possible errors while initializing currentOutputFormat.
         writer = new SnapWriter(output_file_path);
     }
 
     writer->write(adjacency_list, vertices, edges);
+    delete writer;
     std::clock_t end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
     std::cout << std::fixed << std::setprecision(3)
