@@ -11,8 +11,11 @@ class Graph {
     bool _directedness;
 
  public:
+    Graph();
     explicit Graph(bool);
     virtual inline ~Graph() = 0;
+    virtual uint64_t getVertexCount() = 0;
+    virtual uint64_t getEdgeCount() = 0;
     bool isDirected() { return _directedness; }
 };
 

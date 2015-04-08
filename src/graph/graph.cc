@@ -2,6 +2,9 @@
 
 #include "graph.h"
 
-Graph::Graph(bool directedness = false) {
+// We assume that the graph is undirected by default
+Graph::Graph() : Graph::Graph(false) {}
+
+Graph::Graph(bool directedness) {
     _directedness = directedness;
 }

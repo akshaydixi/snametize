@@ -14,6 +14,9 @@ class EdgeListGraph : public Graph {
     // read and store the self loop edges.
     bool self_loops;
 
+    // The number of edges in the graph
+    uint64_t edges;
+
     // The main structure of the graph is stored in the adjacencyList.
     std::unordered_map<uint64_t, std::unordered_set<uint64_t> > adjacencyList;
 
@@ -24,8 +27,11 @@ class EdgeListGraph : public Graph {
     std::unordered_set <uint64_t> vertexSet;
  public:
     EdgeListGraph(bool directedness, bool self_loops);
+    uint64_t getVertexCount();
+    uint64_t getEdgeCount();
     void addEdge(uint64_t, uint64_t);
-
+    void getEdgeList(uint64_t vertex, std::vector<uint64_t>*);
+    void getVertices(std::vector<uint64_t>*);
 
 };
 
