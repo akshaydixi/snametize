@@ -2,6 +2,9 @@
 
 #include <boost/program_options.hpp>
 #include <chrono>
+#include "graph/EdgeListGraph.h"
+#include "reader/reader.h"
+#include "reader/SnapReader.h"
 #include "snametize.h"
 #include "writer/writer.h"
 #include "writer/MetisWriter.h"
@@ -14,6 +17,7 @@ int main(int argc, char** argv) {
     std::string input_file_path, output_file_path, output_format;
     std::string error_message = "Error\n";
     OutputFormat currentOutputFormat = METIS;
+    OutputFormat currentInputFormat = SNAP;
     try {
         po::options_description desc("Allowed options");
         desc.add_options()
@@ -22,8 +26,10 @@ int main(int argc, char** argv) {
                 "Path to the input webgraph file")
         ("output", po::value<std::string>(),
                 "Path to which output file should be written")
-        ("format", po::value<std::string>(),
-                "Which format should the output file be written as. Currently we support SNAP, METIS and GML");
+        ("iformat", po::value<std::string>(),
+                "Which format is the input file be in. Currently we support SNAP, and ASCIIGraph")
+        ("oformat", po::value<std::string>(),
+                "Which format is the output file to be stored as. Currently we support SNAP, METIS and GML");
 
         po::variables_map vm;
         po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -44,16 +50,26 @@ int main(int argc, char** argv) {
         else
             error_message += "Please enter the output path to store the converted graph\n";
 
-        if (vm.count("format")) {
-            std::string format = vm["format"].as<std::string>();
-            if (format == "METIS")
+        if (vm.count("oformat")) {
+            std::string oformat = vm["oformat"].as<std::string>();
+            if (oformat == "METIS")
                 currentOutputFormat = METIS;
-            else if (format == "SNAP")
+            else if (oformat == "SNAP")
                 currentOutputFormat = SNAP;
-            else if (format == "GML")
+            else if (oformat == "GML")
                 currentOutputFormat = GML;
             else
                 error_message+= "Please enter a valid output format: METIS, SNAP or GML\n";
+        }
+
+        if (vm.count("iformat")) {
+            std::string iformat = vm["iformat"].as<std::string>();
+            if (iformat == "SNAP")
+                currentInputFormat = SNAP;
+            else if (iformat == "ASCIIGraph")
+                currentInputFormat = ASCIIGraph;
+            else
+                error_message += "Please enter a valid input format: ASCIIGraph or SNAP\n";
         }
 
         if (error_message.compare("Error\n") != 0) {
@@ -72,42 +88,53 @@ int main(int argc, char** argv) {
             output_file_path.c_str());
     std::clock_t begin = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
-
-    std::ifstream webgraph(input_file_path);
-
-    uint64_t vertices, edges = 0;
+    EdgeListGraph* graph = new EdgeListGraph(false, false);
     std::vector< std::vector<uint64_t> > adjacency_list;
-    std::string line;
+    uint64_t vertices, edges = 0;
 
-    // Read the first line : Number of vertices
-    getline(webgraph, line);
-    std::string::size_type sz;
-    vertices = std::stoi(line, &sz);
+    if (currentInputFormat == ASCIIGraph) {
+        std::ifstream webgraph(input_file_path);
 
-    // Read the raw webgraph file and increment each vertex by 1, and remove
-    // self-loops because Metis doesn't like self-loops
-    uint64_t vertex_counter = 1;
-    NeighborFilterComparator comparator(vertex_counter);
-    while (getline(webgraph, line)) {
-        std::vector<uint64_t> neighbors;
-        std::vector<uint64_t> filtered_neighbors;
-        std::istringstream iss(line);
-        std::vector<std::string> neighbors_string = split(line, ' ');
-        std::transform(neighbors_string.begin(),
-                neighbors_string.end(),
-                std::back_inserter(neighbors),
-                stringToMetisInteger);
-        std::copy_if(neighbors.begin(),
-                neighbors.end(),
-                std::back_inserter(filtered_neighbors),
-                comparator);
-        edges+= filtered_neighbors.size();
-        adjacency_list.push_back(filtered_neighbors);
-        vertex_counter++;
-        comparator.setVertex(vertex_counter);
+        uint64_t vertices, edges = 0;
+        std::vector< std::vector<uint64_t> > adjacency_list;
+        std::string line;
+
+        // Read the first line : Number of vertices
+        getline(webgraph, line);
+        std::string::size_type sz;
+        vertices = std::stoi(line, &sz);
+
+        // Read the raw webgraph file and increment each vertex by 1, and remove
+        // self-loops because Metis doesn't like self-loops
+        uint64_t vertex_counter = 1;
+        NeighborFilterComparator comparator(vertex_counter);
+        while (getline(webgraph, line)) {
+            std::vector<uint64_t> neighbors;
+            std::vector<uint64_t> filtered_neighbors;
+            std::istringstream iss(line);
+            std::vector<std::string> neighbors_string = split(line, ' ');
+            std::transform(neighbors_string.begin(),
+                    neighbors_string.end(),
+                    std::back_inserter(neighbors),
+                    stringToMetisInteger);
+            std::copy_if(neighbors.begin(),
+                    neighbors.end(),
+                    std::back_inserter(filtered_neighbors),
+                    comparator);
+            edges+= filtered_neighbors.size();
+            adjacency_list.push_back(filtered_neighbors);
+            vertex_counter++;
+            comparator.setVertex(vertex_counter);
+        }
+
+        webgraph.close();
+
+    } else if (currentInputFormat == SNAP) {
+        Reader* reader = new SnapReader(input_file_path);
+        reader->read(graph);
+        delete reader;
     }
 
-    webgraph.close();
 
     std::clock_t mid = std::clock();
     auto t_mid = std::chrono::high_resolution_clock::now();
@@ -120,9 +147,14 @@ int main(int argc, char** argv) {
             << std::chrono::duration<double, std::milli>(t_mid-t_start).count()
             << "ms" << std::endl;
 
+
+
     Writer* writer = nullptr;
     if (currentOutputFormat == METIS) {
-        writer = new MetisWriter(output_file_path);
+        MetisWriter* mwriter = new MetisWriter(output_file_path);
+        mwriter->newWrite(graph);
+        delete mwriter;
+
     } else if (currentOutputFormat == GML) {
         writer = new GmlWriter(output_file_path);
     } else {
@@ -132,8 +164,12 @@ int main(int argc, char** argv) {
         writer = new SnapWriter(output_file_path);
     }
 
-    writer->write(adjacency_list, vertices, edges);
+
+    if (currentOutputFormat != METIS) {
+        writer->write(adjacency_list, vertices, edges);
+    }
     delete writer;
+
     std::clock_t end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
     std::cout << std::fixed << std::setprecision(3)

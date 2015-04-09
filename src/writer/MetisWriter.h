@@ -4,6 +4,7 @@
 #define WRITER_METISWRITER_H_
 
 #include "../util/util.h"
+#include "../graph/graph.h"
 #include <iterator>
 #include <sstream>
 #include <string>
@@ -19,6 +20,7 @@ class MetisWriter : public Writer {
     void write(std::vector< std::vector<uint64_t> > adj_list,
             uint64_t vertices,
             uint64_t edges);
+    void newWrite(Graph*);
 };
 
 #endif  // WRITER_METISWRITER_H_

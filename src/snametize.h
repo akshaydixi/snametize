@@ -32,7 +32,8 @@
 enum OutputFormat {
     METIS = 1,
     SNAP = 2,
-    GML = 3
+    GML = 3,
+    ASCIIGraph = 4
 };
 
 // The Comparator class used to filter out edges from the graph the are

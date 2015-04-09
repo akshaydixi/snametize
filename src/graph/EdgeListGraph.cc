@@ -13,19 +13,21 @@ void EdgeListGraph::addEdge(uint64_t v1, uint64_t v2) {
     // Don't process self loop edges, if we don't plan on suppporting them
     if (v2 == v1 && !this->self_loops) return;
 
-
-    if(this->vertexSet.find(v1) != this->vertexSet.end() &&
-            this->adjacencyList.find(v1) != this->adjacencyList.end()) {
+    if(this->adjacencyList.find(v1) != this->adjacencyList.end()) {
         // Check if you've already added this edge before. If so, do not
         // update the number of edges.
-        if (this->adjacencyList[v1].find(v2) != this->adjacencyList[v1].end()) {
+        if (this->adjacencyList[v1].find(v2) == this->adjacencyList[v1].end()) {
             this->adjacencyList[v1].insert(v2);
+            this->vertexSet.insert(v2);
+            if (v2 > maxVertex) maxVertex = v2;
             this->edges++;
         }
     } else {
         this->adjacencyList[v1] = std::unordered_set<uint64_t>({v2});
         this->vertexSet.insert({v1,v2});
         this->edges++;
+        uint64_t tmpMax = v1 > v2 ? v1 : v2;
+        if (maxVertex < tmpMax) maxVertex = tmpMax;
     }
 }
 

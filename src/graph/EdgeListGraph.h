@@ -30,6 +30,7 @@ class EdgeListGraph : public Graph {
     EdgeListGraph(bool directedness, bool self_loops);
     uint64_t getVertexCount();
     uint64_t getEdgeCount();
+    uint64_t maxVertex;
     void addEdge(uint64_t, uint64_t);
     void getEdgeList(uint64_t vertex, std::vector<uint64_t>*);
     void getVertices(std::vector<uint64_t>*);
