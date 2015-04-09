@@ -50,3 +50,7 @@ void EdgeListGraph::getVertices(std::vector<uint64_t>* vertices) {
             std::back_inserter(*vertices));
 }
 
+void EdgeListGraph::setErrorMessage(const std::string& errorMessage) {
+    _error = true;
+    this->errorMessage = errorMessage;
+}

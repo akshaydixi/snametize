@@ -7,4 +7,9 @@ Graph::Graph() : Graph::Graph(false) {}
 
 Graph::Graph(bool directedness) {
     _directedness = directedness;
+    _error = false;
+}
+
+bool Graph::ok() {
+    return _error;
 }

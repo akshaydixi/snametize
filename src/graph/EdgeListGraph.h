@@ -26,13 +26,14 @@ class EdgeListGraph : public Graph {
     // binary search time for lookup.
     std::unordered_set <uint64_t> vertexSet;
  public:
+    std::string errorMessage;
     EdgeListGraph(bool directedness, bool self_loops);
     uint64_t getVertexCount();
     uint64_t getEdgeCount();
     void addEdge(uint64_t, uint64_t);
     void getEdgeList(uint64_t vertex, std::vector<uint64_t>*);
     void getVertices(std::vector<uint64_t>*);
-
+    void setErrorMessage(const std::string& errorMessage);
 };
 
 #endif  // GRAPH_EDGELISTGRAPH_H_

@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -g -Wall")
 
 find_package( Boost REQUIRED COMPONENTS program_options)
 include_directories( ${Boost_INCLUDE_DIRS} )
-add_library(snametize_lib src/snametize.cc src/util/util.cc src/writer/MetisWriter.cc src/writer/GmlWriter.cc src/writer/SnapWriter.cc src/writer/writer.cc src/graph/graph.cc src/graph/EdgeListGraph.cc)
+add_library(snametize_lib src/snametize.cc src/util/util.cc src/writer/MetisWriter.cc src/writer/GmlWriter.cc src/writer/SnapWriter.cc src/writer/writer.cc src/graph/graph.cc src/graph/EdgeListGraph.cc src/reader/reader.cc src/reader/SnapReader.cc)
 add_executable(snametize src/main.cc)
 target_link_libraries( snametize snametize_lib ${Boost_PROGRAM_OPTIONS_LIBRARY} )
 
