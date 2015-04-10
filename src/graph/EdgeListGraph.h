@@ -4,6 +4,7 @@
 #define GRAPH_EDGELISTGRAPH_H_
 
 #include "graph.h"
+#include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -18,7 +19,7 @@ class EdgeListGraph : public Graph {
     uint64_t edges;
 
     // The main structure of the graph is stored in the adjacencyList.
-    std::unordered_map<uint64_t, std::unordered_set<uint64_t> > adjacencyList;
+    std::unordered_map<uint64_t, std::vector<uint64_t> > adjacencyList;
 
     // We're using an unordered_set here, because it gives O(1) access time on
     // an average case. We could have also used a regular map, or maintained

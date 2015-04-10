@@ -16,14 +16,16 @@ void EdgeListGraph::addEdge(uint64_t v1, uint64_t v2) {
     if(this->adjacencyList.find(v1) != this->adjacencyList.end()) {
         // Check if you've already added this edge before. If so, do not
         // update the number of edges.
-        if (this->adjacencyList[v1].find(v2) == this->adjacencyList[v1].end()) {
-            this->adjacencyList[v1].insert(v2);
+        std::vector<uint64_t> v1EdgeList = this->adjacencyList[v1];
+        if (std::find(v1EdgeList.begin(), v1EdgeList.end(), v2) == v1EdgeList.end()) {
+            v1EdgeList.push_back(v2);
             this->vertexSet.insert(v2);
             if (v2 > maxVertex) maxVertex = v2;
             this->edges++;
         }
     } else {
-        this->adjacencyList[v1] = std::unordered_set<uint64_t>({v2});
+        std::vector<uint64_t> tmpVector = {v2};
+        this->adjacencyList[v1] = tmpVector;
         this->vertexSet.insert({v1,v2});
         this->edges++;
         uint64_t tmpMax = v1 > v2 ? v1 : v2;
@@ -33,9 +35,7 @@ void EdgeListGraph::addEdge(uint64_t v1, uint64_t v2) {
 
 void EdgeListGraph::getEdgeList(uint64_t vertex,
         std::vector<uint64_t>* edgeList) {
-    std::copy(this->adjacencyList[vertex].begin(),
-            this->adjacencyList[vertex].end(),
-            std::back_inserter(*edgeList));
+    edgeList =  &(this->adjacencyList[vertex]);
 }
 
 uint64_t EdgeListGraph::getVertexCount() {
